@@ -1,6 +1,7 @@
 package com.example.ligasfragment.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ligasfragment.databinding.FragmentMainBinding
 import com.example.ligasfragment.model.Liga
-import com.example.ligasfragment.ui.adapter.LigaAdapter
+import com.example.ligasfragment.ui.fragment.LigaAdapter
 
 
 
@@ -23,7 +24,7 @@ class MainFragment: Fragment() {
     //esta variable me dará acceso a todos los elementos de fragmant_login.xml porque
     //FrafmentLogingBinding representa mu layout
     //Esot crea una "puerta" de acceso directo a mi diseño para poder usar sus componentes
-    private val listaLigas = ArrayList<Liga>()
+    private val listaLigas = ArrayList<Liga>()//Lista de ligas del RecyclerView
 
 
     //Método que asocia la parte gráfica con la parte lógica
@@ -36,26 +37,55 @@ class MainFragment: Fragment() {
         //Procedemos a darle valor al binding.
         //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
         binding=FragmentMainBinding.inflate(inflater,container,false)
-        var adapter=com.example.ligasfragment.ui.fragment.LigaAdapter(listaLigas)
+        var adapter=LigaAdapter(listaLigas)
         //Esto va a configurar el RecyclerView para que use el adaptador
+        cargarLigasAPI()
+
         return binding.root
      //   var adapter =LigaAdapter(listaLigas)
     }
 
 
-
-   /* private fun cargarLigasAPI(){
-        val url= "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php"
+    private fun cargarLigasAPI() {
+        val url = "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php"
         val colaPeticiones = Volley.newRequestQueue(requireContext())
-        //Necesito una cola de peticiones para nuestros amigos GET y POST
-        val peticion= JsonObjectRequest(Request.Method.GET,//le indico método
-            url,//le doy la url
-            null,//de primeras vacío, por tanto null
-            {respuesta->
-                val arrayLigas=respuesta.getJSONObject(i)
 
-            })
+        val peticion = JsonObjectRequest(
+            Request.Method.GET,
+            url,
+            null, // JSON vacío, ya que solo hacemos GET
+            { respuesta ->  // Listener para la respuesta
+                val arrayLigas = respuesta.getJSONArray("leagues")
+              //  Log.d("Peticion", "Petición añadida a la cola: $peticion")
+                Log.d("API Response", "Respuesta: $respuesta")
+                Log.d("API Response", "Ligas obtenidas: $arrayLigas")
+                // Agrega las ligas obtenidas a la lista
+                for (i in 0 until arrayLigas.length()) {
+                    val liga = arrayLigas.getJSONObject(i)
+                    val ligaObj = Liga(
+                        liga.getString("strLeague"),  // nombre
+                        liga.getString("strCountry"),  // pais
+                        liga.getString("strLogo")     // logo
+                    )
+                    listaLigas.add(ligaObj)  // Añadir el objeto liga a la lista
+                }
+            },
+            { error ->  // Listener para el error
+                Log.e("API Error", error.toString())
+            }
+        )
+        Log.d("Peticion", "URL: $url")
+        Log.d("Peticion", "Petición: $peticion")
+
+        colaPeticiones.add(peticion)  // Agrega la petición a la cola de Volley
+    }
 
 
-    }*/
+
+
+
+
+
+
+
 }
