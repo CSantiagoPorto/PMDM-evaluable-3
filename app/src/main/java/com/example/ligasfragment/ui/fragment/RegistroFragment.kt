@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLoginBinding
 import com.example.ligasfragment.databinding.FragmentRegistroBinding
 
@@ -26,5 +28,13 @@ class RegistroFragment: Fragment() {
         //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
         binding=FragmentRegistroBinding.inflate(inflater,container,false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.buttonRegistro.setOnClickListener(){
+            findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
+        }
+
     }
 }

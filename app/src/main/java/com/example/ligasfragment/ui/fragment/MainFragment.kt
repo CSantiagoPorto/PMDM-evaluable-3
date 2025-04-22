@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentMainBinding
 import com.example.ligasfragment.model.Liga
 import com.example.ligasfragment.ui.fragment.LigaAdapter
@@ -43,6 +45,13 @@ class MainFragment: Fragment() {
 
         return binding.root
      //   var adapter =LigaAdapter(listaLigas)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.buttonVolver.setOnClickListener(){
+            findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
+        }
     }
 
 

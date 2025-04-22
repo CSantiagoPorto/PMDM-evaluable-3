@@ -1,10 +1,13 @@
 package com.example.ligasfragment.ui.fragment
 
 import android.os.Bundle
+import android.renderscript.ScriptGroup.Binding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLoginBinding
 
 class LoginFragment: Fragment() {
@@ -25,5 +28,15 @@ class LoginFragment: Fragment() {
         //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
         binding=FragmentLoginBinding.inflate(inflater,container,false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.buttonLogin.setOnClickListener(){
+            findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+        }
+        binding.buttonRegistro.setOnClickListener(){
+            findNavController().navigate(R.id.action_loginFragment_to_registroFragment)
+        }
     }
 }
