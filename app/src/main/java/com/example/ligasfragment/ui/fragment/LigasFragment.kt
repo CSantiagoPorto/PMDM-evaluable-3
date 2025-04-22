@@ -19,11 +19,10 @@ import com.example.ligasfragment.model.Liga
 import com.example.ligasfragment.LigasAdapter
 
 
-class LigasFragment: Fragment() {
+class LigasFragment : Fragment() {
 
     private lateinit var binding: FragmentLigasBinding
     private val listaLigas = ArrayList<Liga>()
-    private lateinit var ligaAdapter: LigaAdapter
 
     // Método que asocia la parte gráfica con la parte lógica
     override fun onCreateView(
@@ -31,59 +30,29 @@ class LigasFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Me interesa retornar una vista
+        // Inflamos el diseño y asignamos el binding
         binding = FragmentLigasBinding.inflate(inflater, container, false)
+
+        // Configuramos el RecyclerView
+        val recyclerView = binding.recyclerViewLigas
+        recyclerView.layoutManager = LinearLayoutManager(context) // Establece el LayoutManager
+        val adapter = LigasAdapter(listaLigas)
+        recyclerView.adapter = adapter  // Establece el adaptador
+
+        // Llamamos a la función para cargar las ligas (desde la API o de una fuente local)
+        cargarLigas()
+
         return binding.root
     }
 
-    // Método que se ejecuta al arrancar la vista
-    override fun onStart() {
-        super.onStart()
+    // Función para cargar las ligas (puedes agregar aquí tu lógica de carga)
+    private fun cargarLigas() {
+        // Aquí deberías obtener las ligas (de la API o localmente)
+        listaLigas.add(Liga("Liga 1", "País 1", "Logo 1"))
+        listaLigas.add(Liga("Liga 2", "País 2", "Logo 2"))
+        // Agrega más ligas...
 
-        // Configuramos el RecyclerView
-        ligaAdapter = LigaAdapter(listaLigas)
-        binding.recyclerViewLigas.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewLigas.adapter = ligaAdapter
-
-        // Cargamos las ligas desde la API
-        cargarLigasAPI()
-
-        // Botón para volver a la pantalla de login
-        binding.buttonVolver.setOnClickListener {
-            findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
-            //ESTO HAY QUE CAMBIARLE EL ACTION PERO ES PARA QUE NO ROMPA AHORA
-        }
-    }
-
-    private fun cargarLigasAPI() {
-        val url = "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php"
-        val colaPeticiones = Volley.newRequestQueue(requireContext())
-
-        val peticion = JsonObjectRequest(
-          //  DownloadManager.Request.Method.GET,
-            url,
-            null, // JSON vacío, ya que solo hacemos GET
-            { respuesta ->  // Listener para la respuesta
-                val arrayLigas = respuesta.getJSONArray("leagues")
-                // Procesamos la respuesta y agregamos las ligas a la lista
-                for (i in 0 until arrayLigas.length()) {
-                    val liga = arrayLigas.getJSONObject(i)
-                    val ligaObj = Liga(
-                        liga.getString("strLeague"),  // Nombre de la liga
-                        liga.getString("strCountry"),  // País de la liga
-                        liga.getString("strLogo")     // Logo de la liga
-                    )
-                    listaLigas.add(ligaObj)
-                }
-
-                // Notificamos al adaptador que los datos han cambiado
-                ligaAdapter.notifyDataSetChanged()
-            },
-            { error ->  // Listener para el error
-                Toast.makeText(requireContext(), "Error al cargar las ligas", Toast.LENGTH_SHORT).show()
-            }
-        )
-
-        colaPeticiones.add(peticion)  // Agrega la petición a la cola de Volley
+        // Notifica al adaptador que los datos han cambiado
+        binding.recyclerViewLigas.adapter?.notifyDataSetChanged()
     }
 }

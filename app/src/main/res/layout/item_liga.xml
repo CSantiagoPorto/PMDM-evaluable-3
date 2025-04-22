@@ -1,7 +1,18 @@
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textViewNombreLiga"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:textSize="18sp" />
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewNombreLiga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Liga"
+        android:padding="12dp"/>
+
+    <!-- Agregar más componentes si es necesario -->
+</LinearLayout>
+

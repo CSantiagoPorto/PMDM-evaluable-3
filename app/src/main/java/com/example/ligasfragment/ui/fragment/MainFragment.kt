@@ -14,10 +14,6 @@ import com.android.volley.toolbox.Volley
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentMainBinding
 import com.example.ligasfragment.model.Liga
-import com.example.ligasfragment.ui.fragment.LigaAdapter
-
-
-
 
 
 class MainFragment: Fragment() {

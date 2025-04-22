@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_ligasFragment"
+            app:destination="@id/ligasFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_registro"
@@ -36,4 +39,12 @@
             android:id="@+id/action_mainFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
+
+
+    <fragment
+        android:id="@+id/ligasFragment"
+        android:name="com.example.ligasfragment.ui.fragment.LigasFragment"
+        android:label="Ligas Fragment"
+        tools:layout="@layout/fragment_ligas" />
+
 </navigation>
