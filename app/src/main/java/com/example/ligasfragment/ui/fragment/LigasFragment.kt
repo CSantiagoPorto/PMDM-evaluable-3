@@ -20,9 +20,7 @@ import com.example.ligasfragment.LigasAdapter
 
 
 import com.android.volley.Request
-
-
-
+import org.json.JSONException
 
 
 class LigasFragment : Fragment() {
@@ -63,27 +61,39 @@ class LigasFragment : Fragment() {
         val peticion = JsonObjectRequest(
             Request.Method.GET,
             url,
-            null, // No se envía JSON, solo GET
-            { respuesta ->  // Listener para la respuesta exitosa
+            null,
+            { respuesta ->
                 val arrayLigas = respuesta.getJSONArray("leagues")
+
                 // Procesamos las ligas obtenidas
                 for (i in 0 until arrayLigas.length()) {
                     val liga = arrayLigas.getJSONObject(i)
+
+                    // Manejo del campo 'strCountry' para evitar el error de falta de valor
+                    val strCountry = try {
+                        liga.getString("strCountry") // Intentamos obtener el país
+                    } catch (e: JSONException) {
+                        "No country available" // Valor por defecto si no existe
+                    }
+
                     val ligaObj = Liga(
-                        liga.getString("strLeague"),  // Nombre de la liga
-                        liga.optString("strCountry", "No country available"),  // País de la liga
-                        liga.getString("strLogo")  // Logo de la liga
+                        liga.getString("strLeague"), // Nombre de la liga
+                        strCountry,                   // País de la liga (con valor por defecto si no existe)
+                        liga.getString("strLogo")     // Logo de la liga
                     )
-                    listaLigas.add(ligaObj)  // Agregamos la liga a la lista
+
+                    listaLigas.add(ligaObj)
                 }
-                // Notificamos al adaptador que los datos han cambiado
+
+                // Notificamos que los datos han cambiado
                 ligaAdapter.notifyDataSetChanged()
             },
-            { error ->  // Listener para el error
+            { error ->
                 Toast.makeText(requireContext(), "Error al cargar las ligas", Toast.LENGTH_SHORT).show()
             }
         )
 
-        colaPeticiones.add(peticion)  // Agregamos la petición a la cola de Volley
+        colaPeticiones.add(peticion)
     }
+
 }
