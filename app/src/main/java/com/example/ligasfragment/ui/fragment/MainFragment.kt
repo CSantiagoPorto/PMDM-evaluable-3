@@ -1,5 +1,6 @@
 package com.example.ligasfragment.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,9 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.ligasfragment.LigasAdapter
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentMainBinding
 import com.example.ligasfragment.model.Liga
+import com.example.ligasfragment.model.User
+
+
+
+
 
 
 class MainFragment: Fragment() {
@@ -23,7 +30,14 @@ class MainFragment: Fragment() {
     //FrafmentLogingBinding representa mu layout
     //Esot crea una "puerta" de acceso directo a mi diseño para poder usar sus componentes
     private val listaLigas = ArrayList<Liga>()//Lista de ligas del RecyclerView
+    private var usuario: User?=null
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+       // if(arguments?.getSerializable("usuario" != null)){
+       //this.usuario= arguments?.getSerializable("usuario") as User}
+    }
 
     //Método que asocia la parte gráfica con la parte lógica
     override fun onCreateView(
@@ -35,7 +49,7 @@ class MainFragment: Fragment() {
         //Procedemos a darle valor al binding.
         //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
         binding=FragmentMainBinding.inflate(inflater,container,false)
-        var adapter=LigaAdapter(listaLigas)
+        var adapter= LigasAdapter(listaLigas)
         //Esto va a configurar el RecyclerView para que use el adaptador
         cargarLigasAPI()
 
@@ -45,6 +59,7 @@ class MainFragment: Fragment() {
 
     override fun onStart() {
         super.onStart()
+        binding.textMain.setText("Iniciado como ${usuario?.email?:"invitado"}")
         binding.buttonVolver.setOnClickListener(){
             findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
         }

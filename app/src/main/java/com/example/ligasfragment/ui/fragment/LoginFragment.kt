@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLoginBinding
+import com.example.ligasfragment.model.User
 
 class LoginFragment: Fragment() {
 
@@ -33,7 +34,10 @@ class LoginFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         binding.buttonLogin.setOnClickListener(){
-            findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+            val bundle=Bundle()
+            bundle.putSerializable("usuario", User(binding.editTextEmail.text.toString(), binding.editTextPassword.text.toString()))
+
+            findNavController().navigate(R.id.action_loginFragment_to_mainFragment, bundle)
         }
         binding.buttonRegistro.setOnClickListener(){
             findNavController().navigate(R.id.action_loginFragment_to_registroFragment)
