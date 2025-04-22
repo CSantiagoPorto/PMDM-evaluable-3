@@ -18,6 +18,7 @@ import com.example.ligasfragment.LigasAdapter
 import com.example.ligasfragment.model.Liga
 import org.json.JSONException
 
+
 class LigasFragment : Fragment() {
 
     private lateinit var binding: FragmentLigasBinding
@@ -43,6 +44,7 @@ class LigasFragment : Fragment() {
 
         return binding.root
     }
+
     private fun cargarLigasAPI() {
         val url = "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php"
         val colaPeticiones = Volley.newRequestQueue(requireContext())
@@ -84,6 +86,4 @@ class LigasFragment : Fragment() {
 
         colaPeticiones.add(peticion)
     }
-
-
 }
