@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLoginBinding
 import com.example.ligasfragment.databinding.FragmentRegistroBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 class RegistroFragment: Fragment() {
@@ -47,11 +48,19 @@ class RegistroFragment: Fragment() {
         super.onStart()
         binding.buttonRegistro.setOnClickListener(){
             auth.createUserWithEmailAndPassword(
-                binding.editTextEmailRegistro.text.toString(),binding.editTextPasswordRegistro.text.toString()
+                binding.editTextEmailRegistro.text.toString(),
+                binding.editTextPasswordRegistro.text.toString()
                 //Acabo de crear un usuario
-            )
+            ).addOnCompleteListener{
+                if(it.isSuccessful){
+                    findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
 
-            //findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
+                }else{
+                    Snackbar.make(binding.root, "Error en el registro", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+
+            //
         }
 
     }

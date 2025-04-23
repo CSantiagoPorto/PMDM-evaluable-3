@@ -1,11 +1,11 @@
+// LigasFragment.kt
 package com.example.ligasfragment.ui.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -13,103 +13,107 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.ligasfragment.LigasAdapter
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLigasBinding
-
-import com.example.ligasfragment.LigasAdapter
 import com.example.ligasfragment.model.Liga
-import org.json.JSONException
 
-
-class LigasFragment : Fragment() {
+class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
 
     private lateinit var binding: FragmentLigasBinding
-    private val listaLigas = ArrayList<Liga>()
+    private val listaLigas = mutableListOf<Liga>()
     private lateinit var ligaAdapter: LigasAdapter
-    private lateinit var sharedPreferences: SharedPreferences //Almacena en clave:valor
+    private lateinit var prefs: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLigasBinding.inflate(inflater, container, false)
-        //Necesito inicializar sharedPreferences primero
-        sharedPreferences = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
+        // 1) Inicializamos SharedPreferences
+        prefs = requireActivity()
+            .getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
-        //Necesito configurar el adaptador
-        ligaAdapter = LigasAdapter(listaLigas,sharedPreferences)
-        binding.recyclerViewLigas.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewLigas.adapter = ligaAdapter
+        // 2) Creamos el adapter y se lo asignamos al RecyclerView
+        ligaAdapter = LigasAdapter(listaLigas, prefs, this)
+        binding.recyclerViewLigas.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ligaAdapter
+        }
 
-        cargarLigasAPI()
-
+        // 3) Botón "Volver"
         binding.buttonVolver.setOnClickListener {
             findNavController().navigate(R.id.action_ligasFragment_to_mainFragment)
         }
+
+        // 4) Arrancamos la carga inicial
+        cargarLigasAPI()
 
         return binding.root
     }
 
     private fun cargarLigasAPI() {
         val url = "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php"
-        val colaPeticiones = Volley.newRequestQueue(requireContext())
-
-        val peticion = JsonObjectRequest(
-            Request.Method.GET,
-            url,
-            null,
-            { respuesta ->
-                val arrayLigas = respuesta.getJSONArray("leagues")
-
-                // Recorremos la lista
-                for (i in 0 until arrayLigas.length()) {
-                    val liga = arrayLigas.getJSONObject(i)
-
-                    // Si no hay logo
-                    val strLogo = try {
-                        liga.getString("strLogo")
-                    } catch (e: JSONException) {
-                        "No logo available" // Valor por defecto si no hay
+        Volley.newRequestQueue(requireContext()).add(
+            JsonObjectRequest(Request.Method.GET, url, null,
+                { resp ->
+                    val arr = resp.optJSONArray("leagues") ?: return@JsonObjectRequest
+                    for (i in 0 until arr.length()) {
+                        val o = arr.getJSONObject(i)
+                        val id      = o.getString("idLeague")
+                        val nombre  = o.getString("strLeague")
+                        // Logo provisional vacío
+                        val liga = Liga(id = id, nombre = nombre, logoUrl = "")
+                        listaLigas.add(liga)
+                        // Avisamos de la inserción para que pinte el nombre
+                        ligaAdapter.notifyItemInserted(listaLigas.size - 1)
+                        // Y lanzamos la petición para cargar el logo real
+                        cargarLogoDeLiga(liga, listaLigas.size - 1)
                     }
-
-                    val ligaObj = Liga(
-                        liga.getString("strLeague"), // Nombre de la liga
-                        strLogo                       // Logo de la liga
-                    )
-
-                    listaLigas.add(ligaObj)
+                },
+                { _ ->
+                    Toast.makeText(requireContext(), "Error al cargar las ligas", Toast.LENGTH_SHORT).show()
                 }
-
-                // Notificamos que los datos han cambiado
-                ligaAdapter.notifyDataSetChanged()
-            },
-            { error ->
-                // Si hay un error en la petición
-                Toast.makeText(requireContext(), "Error al cargar las ligas", Toast.LENGTH_SHORT).show()
-            }
+            )
         )
-
-        colaPeticiones.add(peticion)
     }
 
-    //Ahora necesito implementar la lógica de favoritos
-    //Tengo que poder agregarla o ELIMINARLA de favoritos
-    //MutableSetOf()-> Crea colecciones que NO PERMITEN DUPLICADOS
-    //Si usase List, permitiría duplicados y podría añadir varias veces la misma liga
-    private fun marcarFav(liga:Liga){
-        val favoritos = sharedPreferences.getStringSet("favoritos", mutableSetOf()) ?: mutableSetOf()
-        //aquí intento encontrar las cadanas de texto. Si no encuentra devuelve vacío (mutableSetOf)
-        if (favoritos.contains(liga.nombre)) {//Si contiene nombre
-            favoritos.remove(liga.nombre)//borra
+    private fun cargarLogoDeLiga(liga: Liga, position: Int) {
+        val detalleUrl = "https://www.thesportsdb.com/api/v1/json/3/lookupleague.php?id=${liga.id}"
+        Volley.newRequestQueue(requireContext()).add(
+            JsonObjectRequest(Request.Method.GET, detalleUrl, null,
+                { resp ->
+                    val arr = resp.optJSONArray("leagues")
+                    if (arr != null && arr.length() > 0) {
+                        val info     = arr.getJSONObject(0)
+                        val badgeUrl = info.optString("strBadge", "")
+                        liga.logoUrl = badgeUrl
+                        // Refresca SOLO esa fila para que muestre el logo
+                        ligaAdapter.notifyItemChanged(position)
+                    }
+                },
+                { err ->
+                    Log.e("LigasFragment", "Error detalle liga ${liga.id}", err)
+                }
+            )
+        )
+    }
+
+    // Este método se llama desde el Adapter cuando pulsas la estrella
+    override fun onFavoritoClick(liga: Liga, position: Int) {
+        // toggle en SharedPreferences
+        val set = prefs.getStringSet("favoritos", mutableSetOf())!!
+            .toMutableSet()
+        if (!set.add(liga.nombre)) {
+            set.remove(liga.nombre)
             Toast.makeText(requireContext(), "${liga.nombre} eliminado de favoritos", Toast.LENGTH_SHORT).show()
-        }else{
-            favoritos.add(liga.nombre)//Si no contiene es que no está en favoritos, así que lo añade
-            Toast.makeText(requireContext(),"${liga.nombre} agregador a favoritos", Toast.LENGTH_SHORT).show()
-
+        } else {
+            Toast.makeText(requireContext(), "${liga.nombre} agregado a favoritos", Toast.LENGTH_SHORT).show()
         }
-        sharedPreferences.edit().putStringSet("favoritos",favoritos).apply()
-
+        prefs.edit().putStringSet("favoritos", set).apply()
+        // Refresca SOLO esa fila para cambiar el icono
+        ligaAdapter.notifyItemChanged(position)
     }
 }

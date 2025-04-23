@@ -1,6 +1,7 @@
 package com.example.ligasfragment.model
 
 data class Liga(
+    val id:String,
     val nombre: String,
-    val logo: String
+    var logoUrl: String
 )
