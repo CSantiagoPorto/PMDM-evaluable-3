@@ -5,7 +5,7 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <!-- Login Fragment -->
+
     <fragment
         tools:layout="@layout/fragment_login"
         android:id="@+id/loginFragment"
@@ -13,15 +13,13 @@
         android:label="LoginFragment">
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
-            app:destination="@id/mainFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
+            app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_loginFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
     </fragment>
 
-    <!-- Registro Fragment -->
+
     <fragment
         tools:layout="@layout/fragment_registro"
         android:id="@+id/registroFragment"
@@ -32,7 +30,7 @@
             app:destination="@id/mainFragment" />
     </fragment>
 
-    <!-- Main Fragment -->
+
     <fragment
         tools:layout="@layout/fragment_main"
         android:id="@+id/mainFragment"
@@ -44,17 +42,14 @@
         <action
             android:id="@+id/action_mainFragment_to_ligasFragment"
             app:destination="@id/ligasFragment" />
-        <argument
-            android:name="usuario"
-            app:argType="com.example.ligasfragment.model.User" />
     </fragment>
 
-    <!-- Ligas Fragment -->
+
     <fragment
         android:id="@+id/ligasFragment"
         android:name="com.example.ligasfragment.ui.fragment.LigasFragment"
         android:label="Ligas Fragment"
-        tools:layout="@layout/fragment_ligas" >
+        tools:layout="@layout/fragment_ligas">
         <action
             android:id="@+id/action_ligasFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

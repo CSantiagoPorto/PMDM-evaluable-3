@@ -21,7 +21,13 @@ class MainFragment : Fragment() {
     ): View? {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
-        // Configuración del botón Volver
+        // Configuración del botón "Seguir Navegando"
+        binding.buttonSeguirNavegando.setOnClickListener {
+            // Navegar a LigasFragment
+            findNavController().navigate(R.id.action_mainFragment_to_ligasFragment)
+        }
+
+        // Configuración del botón "Volver"
         binding.buttonVolver.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
         }
@@ -29,3 +35,4 @@ class MainFragment : Fragment() {
         return binding.root
     }
 }
+

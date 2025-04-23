@@ -1,5 +1,7 @@
 package com.example.ligasfragment.ui.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +26,7 @@ class LigasFragment : Fragment() {
     private lateinit var binding: FragmentLigasBinding
     private val listaLigas = ArrayList<Liga>()
     private lateinit var ligaAdapter: LigasAdapter
+    private lateinit var sharedPreferences: SharedPreferences //Almacena en clave:valor
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +34,12 @@ class LigasFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLigasBinding.inflate(inflater, container, false)
+        //Necesito inicializar sharedPreferences primero
+        sharedPreferences = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
-        ligaAdapter = LigasAdapter(listaLigas)
+
+        //Necesito configurar el adaptador
+        ligaAdapter = LigasAdapter(listaLigas,sharedPreferences)
         binding.recyclerViewLigas.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewLigas.adapter = ligaAdapter
 
@@ -56,20 +63,20 @@ class LigasFragment : Fragment() {
             { respuesta ->
                 val arrayLigas = respuesta.getJSONArray("leagues")
 
-                // Procesamos las ligas obtenidas
+                // Recorremos la lista
                 for (i in 0 until arrayLigas.length()) {
                     val liga = arrayLigas.getJSONObject(i)
 
-                    // Manejo de posibles errores en el campo 'strLogo'
+                    // Si no hay logo
                     val strLogo = try {
                         liga.getString("strLogo")
                     } catch (e: JSONException) {
-                        "No logo available" // Valor por defecto si no existe
+                        "No logo available" // Valor por defecto si no hay
                     }
 
                     val ligaObj = Liga(
                         liga.getString("strLeague"), // Nombre de la liga
-                        strLogo                       // Logo de la liga (con valor por defecto si no existe)
+                        strLogo                       // Logo de la liga
                     )
 
                     listaLigas.add(ligaObj)
@@ -85,5 +92,24 @@ class LigasFragment : Fragment() {
         )
 
         colaPeticiones.add(peticion)
+    }
+
+    //Ahora necesito implementar la lógica de favoritos
+    //Tengo que poder agregarla o ELIMINARLA de favoritos
+    //MutableSetOf()-> Crea colecciones que NO PERMITEN DUPLICADOS
+    //Si usase List, permitiría duplicados y podría añadir varias veces la misma liga
+    private fun marcarFav(liga:Liga){
+        val favoritos = sharedPreferences.getStringSet("favoritos", mutableSetOf()) ?: mutableSetOf()
+        //aquí intento encontrar las cadanas de texto. Si no encuentra devuelve vacío (mutableSetOf)
+        if (favoritos.contains(liga.nombre)) {//Si contiene nombre
+            favoritos.remove(liga.nombre)//borra
+            Toast.makeText(requireContext(), "${liga.nombre} eliminado de favoritos", Toast.LENGTH_SHORT).show()
+        }else{
+            favoritos.add(liga.nombre)//Si no contiene es que no está en favoritos, así que lo añade
+            Toast.makeText(requireContext(),"${liga.nombre} agregador a favoritos", Toast.LENGTH_SHORT).show()
+
+        }
+        sharedPreferences.edit().putStringSet("favoritos",favoritos).apply()
+
     }
 }

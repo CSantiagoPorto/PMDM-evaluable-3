@@ -1,18 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/Logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_foreground" />
+
+
     <TextView
-        android:id="@+id/textViewNombreLiga"
-        android:layout_width="match_parent"
+        android:id="@+id/NombreLiga"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:layout_weight="1"
         android:text="Liga"
-        android:padding="12dp"/>
+        android:textSize="18sp" />
 
-    <!-- Agregar más componentes si es necesario -->
+    <Button
+        android:id="@+id/btnFavorito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Favorito" />
+    <ImageView
+        android:id="@+id/imageViewFavorito"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/fav"
+    android:layout_marginStart="16dp"
+    android:contentDescription="Favorito"/>
+
+
 </LinearLayout>
-
