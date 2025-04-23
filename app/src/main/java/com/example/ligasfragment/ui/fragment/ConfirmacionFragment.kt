@@ -11,7 +11,7 @@ import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
-class MainFragment : Fragment() {
+class ConfirmacionFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var auth: FirebaseAuth

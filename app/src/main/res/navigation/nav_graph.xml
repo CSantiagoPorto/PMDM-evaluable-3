@@ -33,7 +33,7 @@
     <!-- esto va de ligas a login -->
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.ligasfragment.ui.fragment.MainFragment"
+        android:name="com.example.ligasfragment.ui.fragment.ConfirmacionFragment"
         android:label="Main Fragment"
         tools:layout="@layout/fragment_main">
         <action

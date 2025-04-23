@@ -41,7 +41,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
             adapter = ligaAdapter
         }
 
-        // Botón "Volver" para volver al MainFragment
+        // Botón "Volver" para volver al ConfirmacionFragment
         binding.buttonVolver.setOnClickListener {
             findNavController().navigate(R.id.action_ligasFragment_to_mainFragment)
         }
