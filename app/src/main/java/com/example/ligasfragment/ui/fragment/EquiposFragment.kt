@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -21,7 +20,7 @@ class EquiposFragment : Fragment() {
 
     private lateinit var binding: FragmentEquiposBinding
     private lateinit var preferencias: SharedPreferences
-    private val listaEquipos = mutableListOf<Equipo>()
+    private val listaEquipos = mutableListOf<Equipo>()//Creo la mutableList
     private lateinit var equiposAdapter: EquiposAdapter
 
     override fun onCreateView(
@@ -32,8 +31,9 @@ class EquiposFragment : Fragment() {
 
         // Obtener el nombre de la liga desde los argumentos del Bundle
         val ligaNombre = arguments?.getString("ligaNombre") ?: ""
+        //cargarFavoritos
 
-        // Inicializar SharedPreferences
+
         preferencias = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
         // Configurar el RecyclerView para mostrar los equipos
@@ -43,7 +43,7 @@ class EquiposFragment : Fragment() {
             adapter = equiposAdapter
         }
 
-        // Cargar los equipos de la liga seleccionada
+        // Cargao los quipos
         if (ligaNombre.isNotEmpty()) {
             cargarEquiposDeLiga(ligaNombre)
         }
@@ -56,15 +56,15 @@ class EquiposFragment : Fragment() {
             JsonObjectRequest(Request.Method.GET, url, null,
                 { resp ->
                     // Comprobamos si la respuesta contiene los equipos
-                    val arr = resp.optJSONArray("teams") ?: return@JsonObjectRequest
-                    if (arr.length() > 0) {
-                        Log.d("EquiposFragment", "Equipos cargados: $arr")  // Aquí vemos si llegan los datos
-                        for (i in 0 until arr.length()) {
-                            val o = arr.getJSONObject(i)
-                            val teamName = o.getString("strTeam")
-                            val badgeUrl = o.getString("strBadge")
-                            val team = Equipo(name = teamName, badgeUrl = badgeUrl)
-                            listaEquipos.add(team)
+                    val arrayEquipos = resp.optJSONArray("teams") ?: return@JsonObjectRequest
+                    if (arrayEquipos.length() > 0) {
+                        Log.d("EquiposFragment", "Equipos cargados: $arrayEquipos")  // Aquí vemos si llegan los datos
+                        for (i in 0 until arrayEquipos.length()) {
+                            val o = arrayEquipos.getJSONObject(i)
+                            val nombreEquipos = o.getString("strTeam")
+                            val logoEquipos = o.getString("strBadge")
+                            val equipo = Equipo(name = nombreEquipos, badgeUrl = logoEquipos)
+                            listaEquipos.add(equipo)
                         }
 
                         // Actualizar el RecyclerView con los equipos
@@ -74,7 +74,7 @@ class EquiposFragment : Fragment() {
                     }
                 },
                 { error ->
-                    // Manejo de error
+
                     Log.e("EquiposFragment", "Error al cargar equipos", error)
                 }
             )

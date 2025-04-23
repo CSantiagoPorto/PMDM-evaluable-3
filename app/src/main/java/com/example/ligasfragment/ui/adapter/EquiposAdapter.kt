@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.ligasfragment.R
@@ -40,12 +41,22 @@ class EquiposAdapter(
         holder.favoritoImageView.setImageResource(estrellas)
 
         holder.favoritoImageView.setOnClickListener {
-            val set = favs.toMutableSet()
+          /*  val set = favs.toMutableSet()
             if (!set.add(equipo.name)) {
-                set.remove(equipo.name)
+                set.remove(equipo.name)*/
+            if (favs.contains(equipo.name)) {
+                // Si el equipo ya está en favoritos, lo eliminamos
+                favs.remove(equipo.name)
+                Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
+            } else {
+                // Si el equipo no está en favoritos, lo agregamos
+                favs.add(equipo.name)
+                Toast.makeText(holder.itemView.context, "${equipo.name} agregado a favoritos", Toast.LENGTH_SHORT).show()
             }
-            sharedPreferences.edit().putStringSet("favoritos", set).apply()
+            sharedPreferences.edit().putStringSet("favoritos", favs).apply()
             notifyItemChanged(position)
-        }
+            }
+
+
     }
 }
