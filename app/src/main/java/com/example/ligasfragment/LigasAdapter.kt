@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +19,13 @@ class LigasAdapter(
 
     interface OnFavoritoClickListener {
         fun onFavoritoClick(liga: Liga, position: Int)
+        fun onLigaClick(liga:Liga)
     }
 
     class LigaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nombreTextView: TextView    = itemView.findViewById(R.id.NombreLiga)
         val favoritoImageView: ImageView = itemView.findViewById(R.id.imageViewFavorito)
+        val verLigaButton: Button = itemView.findViewById(R.id.btnLiga)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LigaViewHolder {
@@ -52,6 +55,13 @@ class LigasAdapter(
         holder.favoritoImageView.setImageResource(estrellas)
         holder.favoritoImageView.setOnClickListener {
             listener.onFavoritoClick(liga, position)
+
+
+        }
+        //Este es el callback del botón
+        holder.verLigaButton.setOnClickListener {
+            listener.onLigaClick(liga)
+
 
         }
     }

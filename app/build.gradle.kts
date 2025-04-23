@@ -43,7 +43,8 @@ android {
     }
 }
 dependencies {
-
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.5.0")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.5.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

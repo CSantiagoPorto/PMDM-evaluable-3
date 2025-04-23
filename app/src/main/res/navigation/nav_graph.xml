@@ -5,12 +5,12 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-
+    <!-- esto va de login a regiastro-->
     <fragment
-        tools:layout="@layout/fragment_login"
         android:id="@+id/loginFragment"
         android:name="com.example.ligasfragment.ui.fragment.LoginFragment"
-        android:label="LoginFragment">
+        android:label="Login Fragment"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -19,23 +19,23 @@
             app:destination="@id/registroFragment" />
     </fragment>
 
-
+    <!-- de registro a main -->
     <fragment
-        tools:layout="@layout/fragment_registro"
         android:id="@+id/registroFragment"
         android:name="com.example.ligasfragment.ui.fragment.RegistroFragment"
-        android:label="RegistroFragment">
+        android:label="Registro Fragment"
+        tools:layout="@layout/fragment_registro">
         <action
             android:id="@+id/action_registroFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
     </fragment>
 
-
+    <!-- esto va de ligas a login -->
     <fragment
-        tools:layout="@layout/fragment_main"
         android:id="@+id/mainFragment"
         android:name="com.example.ligasfragment.ui.fragment.MainFragment"
-        android:label="MainFragment">
+        android:label="Main Fragment"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -44,7 +44,7 @@
             app:destination="@id/ligasFragment" />
     </fragment>
 
-
+    <!-- esto va de ligas a equipos -->
     <fragment
         android:id="@+id/ligasFragment"
         android:name="com.example.ligasfragment.ui.fragment.LigasFragment"
@@ -53,6 +53,24 @@
         <action
             android:id="@+id/action_ligasFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_ligasFragment_to_equiposFragment"
+            app:destination="@id/equiposFragment">
+            <argument
+                android:name="ligaNombre"
+                app:argType="string" />
+        </action>
+    </fragment>
+
+    <!-- esto es equiposFragment -->
+    <fragment
+        android:id="@+id/equiposFragment"
+        android:name="com.example.ligasfragment.ui.fragment.EquiposFragment"
+        android:label="Equipos Fragment"
+        tools:layout="@layout/fragment_equipos">
+        <argument
+            android:name="ligaNombre"
+            app:argType="string" />
     </fragment>
 
 </navigation>
