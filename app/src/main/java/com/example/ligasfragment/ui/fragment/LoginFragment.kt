@@ -67,11 +67,11 @@ class LoginFragment : Fragment() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val bundle = Bundle()
-                        val usuario = User(email, password)
-                        bundle.putSerializable("usuario", usuario)
+                        //val bundle = Bundle()
+                       //val usuario = User(email, password)
+                        //bundle.putSerializable("usuario", usuario)
                         (requireActivity() as AppCompatActivity).supportActionBar?.show()
-                        findNavController().navigate(R.id.action_loginFragment_to_mainFragment, bundle)
+                        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
                     } else {
                         Snackbar.make(binding.root, "Credenciales incorrectas", Snackbar.LENGTH_SHORT)
                             .setAction("¿Quieres registrarte?") {

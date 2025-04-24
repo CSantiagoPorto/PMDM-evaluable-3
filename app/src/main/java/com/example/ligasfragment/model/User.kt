@@ -4,6 +4,10 @@ import java.io.Serializable
 
 class User(var correo: String? = null,
            var nombre: String? = null,
-           var telefono: Int? = null) :
-    Serializable {
+           var telefono: Int? = null,
+           val listaFav: List<Equipo>,
+
+)
+
+    :Serializable {
 }

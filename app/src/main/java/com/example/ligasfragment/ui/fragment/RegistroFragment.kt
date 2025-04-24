@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.fragment.findNavController
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentRegistroBinding
+import com.example.ligasfragment.model.Equipo
 import com.example.ligasfragment.model.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +21,7 @@ class RegistroFragment : Fragment() {
     private lateinit var binding: FragmentRegistroBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+    val listaVaciaFavoritos = emptyList<Equipo>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,7 +54,7 @@ class RegistroFragment : Fragment() {
 
             auth.createUserWithEmailAndPassword(correo, pass).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val usuario = User(nombre, telefono)
+                    val usuario = User(correo, nombre, telefono.toInt(), listaVaciaFavoritos)
                     database.reference.child("usuarios").child(auth.currentUser!!.uid).setValue(usuario)
                     findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
                 } else {
