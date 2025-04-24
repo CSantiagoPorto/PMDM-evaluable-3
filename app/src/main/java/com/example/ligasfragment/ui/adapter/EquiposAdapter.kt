@@ -37,44 +37,38 @@ class EquiposAdapter(
         Glide.with(holder.itemView).load(equipo.badgeUrl).into(holder.imagenEquipo)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val claveEquipo = equipo.name.replace(".", "_").replace("/", "_") // Firebase no acepta estos caracteres
-        val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(userId ?: "")
+        val claveEquipo = equipo.idTeam//Para FB esta va a ser la clave
 
+        val ref = FirebaseDatabase.getInstance("https://ligasfragment-default-rtdb.europe-west1.firebasedatabase.app/").reference.child("usuarios").child(userId ?: "").child("listaFav")
+        
         // Estado inicial: comprobar si ya es favorito y pintar la estrella
-        ref.child(claveEquipo).get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                holder.favoritoImageView.setImageResource(R.drawable.fav)
-            } else {
-                holder.favoritoImageView.setImageResource(R.drawable.no)
+        ref.get().addOnSuccessListener { snapshot->
+            for(child in snapshot.children){
+                val equipo =child.getValue(Equipo::class.java)
+                Log.v("equiposAdapter","equipo polsado")
+                if(claveEquipo==equipo!!.idTeam) {
+                    holder.favoritoImageView.setImageResource(R.drawable.fav)
+                }
             }
-        }.addOnFailureListener {
-            Log.e("EquiposAdapter", "Error leyendo favorito", it)
+
         }
 
         // Al hacer clic en la estrellita
         holder.favoritoImageView.setOnClickListener {
-            Log.d("EquiposAdapter", "Estrellita pulsada en ${equipo.name}")
-
-            if (userId == null) {
-                Toast.makeText(holder.itemView.context, "Debes estar logueado", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
+            Log.e("EquiposAdapter", "Estrellita pulsada en ${equipo.name}")
+            //ref.child(claveEquipo).setValue(equipo)
             ref.child(claveEquipo).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
-                    // Eliminar de favoritos
                     ref.child(claveEquipo).removeValue()
                     holder.favoritoImageView.setImageResource(R.drawable.no)
-                    Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 } else {
-                    // Agregar a favoritos
-                    ref.child(claveEquipo).setValue(equipo)
+                    ref.child(claveEquipo).setValue(equipo)//guardo el equipo completo en Firebase
                     holder.favoritoImageView.setImageResource(R.drawable.fav)
-                    Toast.makeText(holder.itemView.context, "${equipo.name} agregado a favoritos", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener {
-                Log.e("EquiposAdapter", "Error al actualizar favorito", it)
+                Log.e("EquiposAdapter", "Error leyendo favorito", it)
             }
+            holder.favoritoImageView.setImageResource(R.drawable.fav)
         }
     }
 }

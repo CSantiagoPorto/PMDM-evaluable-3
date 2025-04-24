@@ -61,9 +61,10 @@ class EquiposFragment : Fragment() {
                     if (arrayEquipos.length() > 0) {
                         for (i in 0 until arrayEquipos.length()) {
                             val o = arrayEquipos.getJSONObject(i)
+                            val idEquipo=o.getString("idTeam")
                             val nombreEquipos = o.getString("strTeam")
                             val logoEquipos = o.getString("strBadge")
-                            val equipo = Equipo(name = nombreEquipos, badgeUrl = logoEquipos)
+                            val equipo = Equipo(idTeam = idEquipo, name = nombreEquipos, badgeUrl = logoEquipos)
                             listaEquipos.add(equipo)
                         }
                         equiposAdapter.notifyDataSetChanged()
