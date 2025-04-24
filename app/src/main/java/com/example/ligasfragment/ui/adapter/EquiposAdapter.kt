@@ -53,6 +53,8 @@ class EquiposAdapter(
 
         // Al hacer clic en la estrellita
         holder.favoritoImageView.setOnClickListener {
+            Log.d("EquiposAdapter", "Estrellita pulsada en ${equipo.name}")
+
             if (userId == null) {
                 Toast.makeText(holder.itemView.context, "Debes estar logueado", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
