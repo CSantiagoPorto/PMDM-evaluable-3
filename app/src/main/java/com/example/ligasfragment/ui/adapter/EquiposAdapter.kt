@@ -1,6 +1,5 @@
 package com.example.ligasfragment.ui.adapter
 
-import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class EquiposAdapter(
-    private val listaEquipos: List<Equipo>,
-    private val sharedPreferences: SharedPreferences
+    private val listaEquipos: List<Equipo>
 ) : RecyclerView.Adapter<EquiposAdapter.EquipoViewHolder>() {
 
     class EquipoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,42 +35,33 @@ class EquiposAdapter(
         holder.nombreEquipo.text = equipo.name
         Glide.with(holder.itemView).load(equipo.badgeUrl).into(holder.imagenEquipo)
 
-        val favoritos = sharedPreferences.getStringSet("favoritos", emptySet())?.toMutableSet() ?: mutableSetOf()
-        val esFavorito = favoritos.contains(equipo.name)
-        holder.favoritoImageView.setImageResource(if (esFavorito) R.drawable.fav else R.drawable.no)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(userId ?: "")
 
-        holder.favoritoImageView.setOnClickListener {//El escuchador
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val database=FirebaseDatabase.getInstance()
-            val referencia =database.getReference("equipos Favoritos").child(userId ?: "")
-            if (esFavorito) {
-                favoritos.remove(equipo.name)
-                Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
+        // Se establece la estrella por defecto como no-favorito
+        holder.favoritoImageView.setImageResource(R.drawable.no)
 
-                if(userId !=null){referencia.child(equipo.name).removeValue()
-                }else{favoritos.add(equipo.name)
-                    Toast.makeText(holder.itemView.context,"${equipo.name}agregado con exito a favcritos", Toast.LENGTH_SHORT).show()
-                    if (userId!=null){referencia.child(equipo.name).setValue(equipo)}
-                    notifyItemChanged(position)
-                }
-
-               /* holder.favoritoImageView.setImageResource(R.drawable.no)
-                userId?.let {
-                    val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(it)
-                    ref.child(equipo.name).removeValue()
-                }
-                Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
-            } else {
-                favoritos.add(equipo.name)
-                sharedPreferences.edit().putStringSet("favoritos", favoritos).apply()
-                holder.favoritoImageView.setImageResource(R.drawable.fav)
-                userId?.let {
-                    val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(it)
-                    ref.child(equipo.name).setValue(equipo)
-                }*/
-                //Toast.makeText(holder.itemView.context, "${equipo.name} agregado a favoritos", Toast.LENGTH_SHORT).show()
+        // Escuchador
+        holder.favoritoImageView.setOnClickListener {
+            if (userId == null) {
+                Toast.makeText(holder.itemView.context, "Debes estar logueado", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            notifyItemChanged(position)
+
+            // Consulta actual del equipo para saber si está o no en favoritos
+            ref.child(equipo.name).get().addOnSuccessListener { snapshot ->
+                if (snapshot.exists()) {
+                    // Eliminar de favoritos
+                    ref.child(equipo.name).removeValue()
+                    holder.favoritoImageView.setImageResource(R.drawable.no)
+                    Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Agregar a favoritos
+                    ref.child(equipo.name).setValue(equipo)
+                    holder.favoritoImageView.setImageResource(R.drawable.fav)
+                    Toast.makeText(holder.itemView.context, "${equipo.name} agregado a favoritos", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

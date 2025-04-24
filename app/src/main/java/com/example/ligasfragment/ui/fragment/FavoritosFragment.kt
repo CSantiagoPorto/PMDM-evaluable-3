@@ -32,11 +32,13 @@ class FavoritosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        prefs = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
-
-        adapter = EquiposAdapter(listaFavoritos, prefs)
+        adapter = EquiposAdapter(listaFavoritos)
         binding.recyclerFavoritos.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerFavoritos.adapter = adapter
+        binding.btnVolverFavoritos.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
 
         cargarFavoritosFirebase()
     }

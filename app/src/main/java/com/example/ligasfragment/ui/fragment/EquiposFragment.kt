@@ -33,7 +33,7 @@ class EquiposFragment : Fragment() {
 
         preferencias = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
-        equiposAdapter = EquiposAdapter(listaEquipos, preferencias)
+        equiposAdapter = EquiposAdapter(listaEquipos)
         binding.recyclerViewEquipos.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = equiposAdapter
