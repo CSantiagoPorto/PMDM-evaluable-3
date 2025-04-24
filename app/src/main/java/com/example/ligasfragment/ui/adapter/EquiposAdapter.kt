@@ -1,5 +1,6 @@
 package com.example.ligasfragment.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,31 +37,41 @@ class EquiposAdapter(
         Glide.with(holder.itemView).load(equipo.badgeUrl).into(holder.imagenEquipo)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val claveEquipo = equipo.name.replace(".", "_").replace("/", "_") // Firebase no acepta estos caracteres
         val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(userId ?: "")
 
-        // Se establece la estrella por defecto como no-favorito
-        holder.favoritoImageView.setImageResource(R.drawable.no)
+        // Estado inicial: comprobar si ya es favorito y pintar la estrella
+        ref.child(claveEquipo).get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                holder.favoritoImageView.setImageResource(R.drawable.fav)
+            } else {
+                holder.favoritoImageView.setImageResource(R.drawable.no)
+            }
+        }.addOnFailureListener {
+            Log.e("EquiposAdapter", "Error leyendo favorito", it)
+        }
 
-        // Escuchador
+        // Al hacer clic en la estrellita
         holder.favoritoImageView.setOnClickListener {
             if (userId == null) {
                 Toast.makeText(holder.itemView.context, "Debes estar logueado", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Consulta actual del equipo para saber si está o no en favoritos
-            ref.child(equipo.name).get().addOnSuccessListener { snapshot ->
+            ref.child(claveEquipo).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     // Eliminar de favoritos
-                    ref.child(equipo.name).removeValue()
+                    ref.child(claveEquipo).removeValue()
                     holder.favoritoImageView.setImageResource(R.drawable.no)
                     Toast.makeText(holder.itemView.context, "${equipo.name} eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 } else {
                     // Agregar a favoritos
-                    ref.child(equipo.name).setValue(equipo)
+                    ref.child(claveEquipo).setValue(equipo)
                     holder.favoritoImageView.setImageResource(R.drawable.fav)
                     Toast.makeText(holder.itemView.context, "${equipo.name} agregado a favoritos", Toast.LENGTH_SHORT).show()
                 }
+            }.addOnFailureListener {
+                Log.e("EquiposAdapter", "Error al actualizar favorito", it)
             }
         }
     }
