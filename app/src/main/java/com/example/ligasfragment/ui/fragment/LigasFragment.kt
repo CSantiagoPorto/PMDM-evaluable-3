@@ -24,6 +24,13 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
     private lateinit var ligaAdapter: LigasAdapter
     private lateinit var prefs: SharedPreferences
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // desactivamos el menú superior para este fragmento
+        setHasOptionsMenu(false)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,10 +38,10 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
     ): View {
         binding = FragmentLigasBinding.inflate(inflater, container, false)
 
-        // Inicializamos SharedPreferences
+
         prefs = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
 
-        // Creamos el adaptador y lo asignamos al RecyclerView
+
         ligaAdapter = LigasAdapter(listaLigas, prefs, this)
         binding.recyclerViewLigas.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -103,7 +110,6 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
             putString("ligaNombre", liga.nombre) // Pasa el nombre de la liga
         }
 
-        // Navegar a EquiposFragment con el Bundle como argumento
         findNavController().navigate(R.id.action_ligasFragment_to_equiposFragment, bundle)
     }
 

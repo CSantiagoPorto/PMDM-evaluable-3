@@ -71,6 +71,13 @@
         <argument
             android:name="ligaNombre"
             app:argType="string" />
+        <action
+            android:id="@+id/action_equiposFragment_to_favoritosFragment"
+            app:destination="@id/favoritosFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/favoritosFragment"
+        android:name="com.example.ligasfragment.ui.fragment.FavoritosFragment"
+        android:label="FavoritosFragment" />
 
 </navigation>

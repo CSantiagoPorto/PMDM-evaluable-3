@@ -43,7 +43,7 @@ class EquiposFragment : Fragment() {
             adapter = equiposAdapter
         }
 
-        // Cargao los quipos
+        // Cargo los quipos
         if (ligaNombre.isNotEmpty()) {
             cargarEquiposDeLiga(ligaNombre)
         }
@@ -58,7 +58,7 @@ class EquiposFragment : Fragment() {
                     // Comprobamos si la respuesta contiene los equipos
                     val arrayEquipos = resp.optJSONArray("teams") ?: return@JsonObjectRequest
                     if (arrayEquipos.length() > 0) {
-                        Log.d("EquiposFragment", "Equipos cargados: $arrayEquipos")  // Aquí vemos si llegan los datos
+                        Log.d("EquiposFragment", "Equipos cargados: $arrayEquipos")  //prueba
                         for (i in 0 until arrayEquipos.length()) {
                             val o = arrayEquipos.getJSONObject(i)
                             val nombreEquipos = o.getString("strTeam")

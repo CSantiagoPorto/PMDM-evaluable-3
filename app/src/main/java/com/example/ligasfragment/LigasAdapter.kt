@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.ligasfragment.model.Liga
 
 class LigasAdapter(
@@ -23,8 +22,8 @@ class LigasAdapter(
     }
 
     class LigaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nombreTextView: TextView    = itemView.findViewById(R.id.NombreLiga)
-        val favoritoImageView: ImageView = itemView.findViewById(R.id.imageViewFavorito)
+        val nombreTextView: TextView    = itemView.findViewById(R.id.NombreLiga)//este es el textView donde voy a mostrar la liga
+        val favoritoImagen: ImageView = itemView.findViewById(R.id.imageViewFavorito)
         val verLigaButton: Button = itemView.findViewById(R.id.btnLiga)
     }
 
@@ -40,7 +39,7 @@ class LigasAdapter(
         val liga = listaLigas[position]
         holder.nombreTextView.text = liga.nombre
 
-        // ¿Está en favoritos?
+        // miro si está en favoritos
         val favs = sharedPreferences
             .getStringSet("favoritos", emptySet())!!
         val estrellas = if (favs.contains(liga.nombre)) R.drawable.fav else R.drawable.no
@@ -52,8 +51,8 @@ class LigasAdapter(
         //    .load(liga.logoUrl)
           //  .placeholder(R.drawable.no)
             //.into(holder.favoritoImageView)
-        holder.favoritoImageView.setImageResource(estrellas)
-        holder.favoritoImageView.setOnClickListener {
+        holder.favoritoImagen.setImageResource(estrellas)
+        holder.favoritoImagen.setOnClickListener {
             listener.onFavoritoClick(liga, position)
 
 
