@@ -40,7 +40,7 @@ class EquiposAdapter(
         val claveEquipo = equipo.idTeam//Para FB esta va a ser la clave
 
         val ref = FirebaseDatabase.getInstance("https://ligasfragment-default-rtdb.europe-west1.firebasedatabase.app/").reference.child("usuarios").child(userId ?: "").child("listaFav")
-        
+
         // Estado inicial: comprobar si ya es favorito y pintar la estrella
         ref.get().addOnSuccessListener { snapshot->
             for(child in snapshot.children){
