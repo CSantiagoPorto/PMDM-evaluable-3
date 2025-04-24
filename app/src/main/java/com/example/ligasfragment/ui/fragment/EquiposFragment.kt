@@ -37,6 +37,12 @@ class EquiposFragment : Fragment() {
         binding.recyclerViewEquipos.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = equiposAdapter
+
+        }
+        binding.buttonRegresar.setOnClickListener{
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+            //Escuchamos al botón y cuando se pulsa simula el comportamiento de atrás en el móvil
+            //Sin picar código
         }
 
         if (ligaNombre.isNotEmpty()) {
