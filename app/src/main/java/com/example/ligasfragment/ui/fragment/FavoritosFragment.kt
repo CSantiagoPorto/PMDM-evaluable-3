@@ -35,23 +35,30 @@ class FavoritosFragment : Fragment() {
         adapter = EquiposAdapter(listaFavoritos)
         binding.recyclerFavoritos.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerFavoritos.adapter = adapter
+
+        // Botón para volver
         binding.btnVolverFavoritos.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-
+        // Cargar equipos favoritos desde Firebase
         cargarFavoritosFirebase()
     }
 
     private fun cargarFavoritosFirebase() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(userId)
+            val ref = FirebaseDatabase.getInstance()
+                .getReference("equiposFavoritos")
+                .child(userId)
+
             ref.get().addOnSuccessListener { snapshot ->
                 listaFavoritos.clear()
                 for (hijo in snapshot.children) {
                     val equipo = hijo.getValue(Equipo::class.java)
-                    if (equipo != null) listaFavoritos.add(equipo)
+                    if (equipo != null) {
+                        listaFavoritos.add(equipo)
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }.addOnFailureListener {
