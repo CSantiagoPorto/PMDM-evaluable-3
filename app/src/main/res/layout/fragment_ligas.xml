@@ -6,7 +6,7 @@
     android:gravity="center"
     android:padding="16dp">
 
-    <!-- Titulo de la vista -->
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,14 +16,14 @@
         android:layout_marginBottom="4dp"
         android:gravity="center"/>
 
-    <!-- RecyclerView donde se mostrarán las ligas -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewLigas"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- TextView con el correo electrónico o mensaje de estado -->
+
     <TextView
         android:id="@+id/textMain"
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:text="Iniciada sesión"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Botón para regresar al login o a otro fragmento -->
+
     <Button
         android:id="@+id/buttonVolver"
         android:layout_width="match_parent"

@@ -1,30 +1,60 @@
 package com.example.ligasfragment.ui.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ligasfragment.databinding.FragmentFavoritosBinding
-import com.example.ligasfragment.databinding.FragmentLoginBinding
+import com.example.ligasfragment.model.Equipo
+import com.example.ligasfragment.ui.adapter.EquiposAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
-class FavoritosFragment: Fragment() {
+class FavoritosFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritosBinding
-    //esta variable me dará acceso a todos los elementos de fragmant_login.xml porque
-    //FrafmentLogingBinding representa mu layout
-    //Esot crea una "puerta" de acceso directo a mi diseño para poder usar sus componentes
+    private lateinit var adapter: EquiposAdapter
+    private val listaFavoritos = mutableListOf<Equipo>()
+    private lateinit var prefs: SharedPreferences
 
-    //Método que asocia la parte gráfica con la parte lógica
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?//Me dan el estado guardado
-    ): View? {
-        //Me interesa retornar una vista
-        //Procedemos a darle valor al binding.
-        //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
-        binding=FragmentFavoritosBinding.inflate(inflater,container,false)
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFavoritosBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        prefs = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
+
+        adapter = EquiposAdapter(listaFavoritos, prefs)
+        binding.recyclerFavoritos.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerFavoritos.adapter = adapter
+
+        cargarFavoritosFirebase()
+    }
+
+    private fun cargarFavoritosFirebase() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val ref = FirebaseDatabase.getInstance().getReference("equiposFavoritos").child(userId)
+            ref.get().addOnSuccessListener { snapshot ->
+                listaFavoritos.clear()
+                for (hijo in snapshot.children) {
+                    val equipo = hijo.getValue(Equipo::class.java)
+                    if (equipo != null) listaFavoritos.add(equipo)
+                }
+                adapter.notifyDataSetChanged()
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Error al cargar favoritos", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

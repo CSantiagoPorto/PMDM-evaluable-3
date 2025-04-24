@@ -58,4 +58,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     // https://mvnrepository.com/artifact/com.github.bumptech.glide/glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("com.google.firebase:firebase-database:20.3.0")
+
 }

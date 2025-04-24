@@ -60,6 +60,9 @@
                 android:name="ligaNombre"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/action_ligasFragment_to_favoritosFragment"
+            app:destination="@id/favoritosFragment" />
     </fragment>
 
     <!-- esto es equiposFragment -->

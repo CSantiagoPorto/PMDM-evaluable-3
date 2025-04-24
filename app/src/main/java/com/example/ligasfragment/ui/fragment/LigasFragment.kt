@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +17,8 @@ import com.example.ligasfragment.LigasAdapter
 import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentLigasBinding
 import com.example.ligasfragment.model.Liga
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
 
@@ -26,9 +29,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // desactivamos el menú superior para este fragmento
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -36,11 +37,9 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
         binding = FragmentLigasBinding.inflate(inflater, container, false)
-
-
         prefs = requireActivity().getSharedPreferences("mi_preferencia", Context.MODE_PRIVATE)
-
 
         ligaAdapter = LigasAdapter(listaLigas, prefs, this)
         binding.recyclerViewLigas.apply {
@@ -48,15 +47,29 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
             adapter = ligaAdapter
         }
 
-        // Botón "Volver" para volver al ConfirmacionFragment
         binding.buttonVolver.setOnClickListener {
             findNavController().navigate(R.id.action_ligasFragment_to_mainFragment)
         }
 
-        // Arrancamos la carga inicial de las ligas desde la API
         cargarLigasAPI()
-
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.favorito -> {
+                findNavController().navigate(R.id.action_ligasFragment_to_favoritosFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun cargarLigasAPI() {
@@ -72,7 +85,6 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
                         val liga = Liga(id = id, nombre = nombre, logoUrl = "")
                         listaLigas.add(liga)
                         ligaAdapter.notifyItemInserted(listaLigas.size - 1)
-                        // Llamamos para cargar el logo real
                         cargarLogoDeLiga(liga, listaLigas.size - 1)
                     }
                 },
@@ -93,7 +105,6 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
                         val info = arr.getJSONObject(0)
                         val badgeUrl = info.optString("strBadge", "")
                         liga.logoUrl = badgeUrl
-                        // Refresca SOLO esa fila para que muestre el logo
                         ligaAdapter.notifyItemChanged(position)
                     }
                 },
@@ -104,27 +115,34 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
         )
     }
 
-    // Este método se llama cuando pulsas una liga
     override fun onLigaClick(liga: Liga) {
         val bundle = Bundle().apply {
-            putString("ligaNombre", liga.nombre) // Pasa el nombre de la liga
+            putString("ligaNombre", liga.nombre)
         }
-
         findNavController().navigate(R.id.action_ligasFragment_to_equiposFragment, bundle)
     }
 
     override fun onFavoritoClick(liga: Liga, position: Int) {
-        // Toggle en SharedPreferences
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
         val favoritos = prefs.getStringSet("favoritos", mutableSetOf()) ?: mutableSetOf()
         val set = favoritos.toMutableSet()
+
         if (!set.add(liga.nombre)) {
             set.remove(liga.nombre)
             Toast.makeText(requireContext(), "${liga.nombre} eliminado de favoritos", Toast.LENGTH_SHORT).show()
+            userId?.let {
+                val ref = FirebaseDatabase.getInstance().getReference("favoritos").child(it)
+                ref.child(liga.nombre).removeValue()
+            }
         } else {
-            Toast.makeText(requireContext(), "${liga.nombre} agregado a favoritos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "${liga.nombre} agregada a favoritos", Toast.LENGTH_SHORT).show()
+            userId?.let {
+                val ref = FirebaseDatabase.getInstance().getReference("favoritos").child(it)
+                ref.child(liga.nombre).setValue(liga)
+            }
         }
+
         prefs.edit().putStringSet("favoritos", set).apply()
-        // Refresca SOLO esa fila para cambiar el icono
         ligaAdapter.notifyItemChanged(position)
     }
 }

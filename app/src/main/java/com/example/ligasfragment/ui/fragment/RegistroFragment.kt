@@ -8,60 +8,56 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.ligasfragment.R
-import com.example.ligasfragment.databinding.FragmentLoginBinding
 import com.example.ligasfragment.databinding.FragmentRegistroBinding
+import com.example.ligasfragment.model.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
-class RegistroFragment: Fragment() {
+class RegistroFragment : Fragment() {
 
     private lateinit var binding: FragmentRegistroBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
-    //esta variable me dará acceso a todos los elementos de fragmant_login.xml porque
-    //FrafmentLogingBinding representa mu layout
-    //Esot crea una "puerta" de acceso directo a mi diseño para poder usar sus componentes
-
-
-
-
-    private lateinit var auth:FirebaseAuth
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        auth= FirebaseAuth.getInstance()//Ya puedo autenticar
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance("https://ligasfragment-default-rtdb.europe-west1.firebasedatabase.app/")
     }
 
-
-    //Método que asocia la parte gráfica con la parte lógica
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?//Me dan el estado guardado
-    ): View? {
-        //Me interesa retornar una vista
-        //Procedemos a darle valor al binding.
-        //Infla el diseño fragment_login.xml y guárdalo en la cariable para que pueda usar sus vistas
-        binding=FragmentRegistroBinding.inflate(inflater,container,false)
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRegistroBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        binding.buttonRegistro.setOnClickListener(){
-            auth.createUserWithEmailAndPassword(
-                binding.editTextEmailRegistro.text.toString(),
-                binding.editTextPasswordRegistro.text.toString()
-                //Acabo de crear un usuario
-            ).addOnCompleteListener{
-                if(it.isSuccessful){
-                    findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
 
-                }else{
+        binding.btnRegistro.setOnClickListener {
+            val correo = binding.editCorreo.text.toString()
+            val pass = binding.editPass.text.toString()
+            val nombre = binding.editNombre.text.toString()
+            val telefono = binding.editTelefono.text.toString()
+
+            if (correo.isBlank() || pass.length < 6 || nombre.isBlank() || telefono.isBlank()) {
+                Snackbar.make(binding.root, "Completa todos los campos correctamente", Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            auth.createUserWithEmailAndPassword(correo, pass).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val usuario = User(nombre, telefono)
+                    database.reference.child("usuarios").child(auth.currentUser!!.uid).setValue(usuario)
+                    findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
+                } else {
                     Snackbar.make(binding.root, "Error en el registro", Snackbar.LENGTH_SHORT).show()
                 }
             }
-
-            //
         }
-
     }
 }
