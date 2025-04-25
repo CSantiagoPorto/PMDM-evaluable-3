@@ -12,53 +12,53 @@
         android:label="Login Fragment"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            android:id="@+id/action_loginFragment_to_confirmacionFragment"
+            app:destination="@id/confirmacionFragment" />
         <action
             android:id="@+id/action_loginFragment_to_registroFragment"
             app:destination="@id/registroFragment" />
     </fragment>
 
-    <!-- de registro a main -->
+
     <fragment
         android:id="@+id/registroFragment"
         android:name="com.example.ligasfragment.ui.fragment.RegistroFragment"
-        android:label="Registro Fragment"
+        android:label="Registro"
         tools:layout="@layout/fragment_registro">
         <action
-            android:id="@+id/action_registroFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            android:id="@+id/action_registroFragment_to_confirmacionFragment"
+            app:destination="@id/confirmacionFragment" />
     </fragment>
 
     <!-- esto va de ligas a login -->
     <fragment
-        android:id="@+id/mainFragment"
+        android:id="@+id/confirmacionFragment"
         android:name="com.example.ligasfragment.ui.fragment.ConfirmacionFragment"
-        android:label="Main Fragment"
-        tools:layout="@layout/fragment_main">
+        android:label="Ligas"
+        tools:layout="@layout/fragment_confirmacion">
         <action
-            android:id="@+id/action_mainFragment_to_loginFragment"
+            android:id="@+id/action_confirmacionFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_ligasFragment"
+            android:id="@+id/action_confirmacionFragment_to_ligasFragment"
             app:destination="@id/ligasFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_equiposFragment"
+            android:id="@+id/action_confirmacionFragment_to_equiposFragment"
             app:destination="@id/equiposFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_favoritosFragment"
+            android:id="@+id/action_confirmacionFragment_to_favoritosFragment"
             app:destination="@id/favoritosFragment" />
     </fragment>
 
-    <!-- esto va de ligas a equipos -->
+
     <fragment
         android:id="@+id/ligasFragment"
         android:name="com.example.ligasfragment.ui.fragment.LigasFragment"
-        android:label="Ligas Fragment"
+        android:label="Ligas"
         tools:layout="@layout/fragment_ligas">
         <action
-            android:id="@+id/action_ligasFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
+            android:id="@+id/action_ligasFragment_to_confirmacionFragment"
+            app:destination="@id/confirmacionFragment" />
         <action
             android:id="@+id/action_ligasFragment_to_equiposFragment"
             app:destination="@id/equiposFragment">
@@ -69,13 +69,16 @@
         <action
             android:id="@+id/action_ligasFragment_to_favoritosFragment"
             app:destination="@id/favoritosFragment" />
+        <action
+            android:id="@+id/action_ligasFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
-    <!-- esto es equiposFragment -->
+
     <fragment
         android:id="@+id/equiposFragment"
         android:name="com.example.ligasfragment.ui.fragment.EquiposFragment"
-        android:label="Equipos Fragment"
+        android:label="Equipos"
         tools:layout="@layout/fragment_equipos">
         <argument
             android:name="ligaNombre"
@@ -90,6 +93,6 @@
     <fragment
         android:id="@+id/favoritosFragment"
         android:name="com.example.ligasfragment.ui.fragment.FavoritosFragment"
-        android:label="FavoritosFragment" />
+        android:label="Favoritos" />
 
 </navigation>

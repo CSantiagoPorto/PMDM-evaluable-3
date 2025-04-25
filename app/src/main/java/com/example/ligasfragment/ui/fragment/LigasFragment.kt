@@ -48,7 +48,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
         }
 
         binding.buttonVolver.setOnClickListener {
-            findNavController().navigate(R.id.action_ligasFragment_to_mainFragment)
+            findNavController().navigate(R.id.action_ligasFragment_to_confirmacionFragment)
         }
 
         cargarLigasAPI()
@@ -64,8 +64,16 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.inicio -> {
+                findNavController().navigate(R.id.action_ligasFragment_to_loginFragment)
+                true
+            }
             R.id.favorito -> {
                 findNavController().navigate(R.id.action_ligasFragment_to_favoritosFragment)
+                true
+            }
+            R.id.salir -> {
+                requireActivity().finishAffinity() // Esto cierra la app
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -85,7 +93,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
                         val liga = Liga(id = id, nombre = nombre, logoUrl = "")
                         listaLigas.add(liga)
                         ligaAdapter.notifyItemInserted(listaLigas.size - 1)
-                        cargarLogoDeLiga(liga, listaLigas.size - 1)
+                       // cargarLogoDeLiga(liga, listaLigas.size - 1)
                     }
                 },
                 { _ ->
@@ -95,7 +103,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
         )
     }
 
-    private fun cargarLogoDeLiga(liga: Liga, position: Int) {
+  /*  private fun cargarLogoDeLiga(liga: Liga, position: Int) {
         val detalleUrl = "https://www.thesportsdb.com/api/v1/json/3/lookupleague.php?badge=1&id=${liga.id}"
         Volley.newRequestQueue(requireContext()).add(
             JsonObjectRequest(Request.Method.GET, detalleUrl, null,
@@ -113,7 +121,8 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
                 }
             )
         )
-    }
+    }*/
+    //Este método porque leí mal el enunciado y entendía que había que cargar todo
 
     override fun onLigaClick(liga: Liga) {
         val bundle = Bundle().apply {

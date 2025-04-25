@@ -71,7 +71,7 @@ class LoginFragment : Fragment() {
                        //val usuario = User(email, password)
                         //bundle.putSerializable("usuario", usuario)
                         (requireActivity() as AppCompatActivity).supportActionBar?.show()
-                        findNavController().navigate(R.id.action_loginFragment_to_mainFragment)
+                        findNavController().navigate(R.id.action_loginFragment_to_confirmacionFragment)
                     } else {
                         Snackbar.make(binding.root, "Credenciales incorrectas", Snackbar.LENGTH_SHORT)
                             .setAction("¿Quieres registrarte?") {
@@ -81,7 +81,7 @@ class LoginFragment : Fragment() {
                 }
         }
 
-        // REGISTRO
+
         binding.buttonRegistro.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registroFragment)
         }

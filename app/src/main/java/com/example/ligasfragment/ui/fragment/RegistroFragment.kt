@@ -56,7 +56,7 @@ class RegistroFragment : Fragment() {
                 if (it.isSuccessful) {
                     val usuario = User(correo, nombre, telefono.toInt(), listaVaciaFavoritos)
                     database.reference.child("usuarios").child(auth.currentUser!!.uid).setValue(usuario)
-                    findNavController().navigate(R.id.action_registroFragment_to_mainFragment)
+                    findNavController().navigate(R.id.action_registroFragment_to_confirmacionFragment)
                 } else {
                     Snackbar.make(binding.root, "Error en el registro", Snackbar.LENGTH_SHORT).show()
                 }

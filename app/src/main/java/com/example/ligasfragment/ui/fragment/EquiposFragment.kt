@@ -5,13 +5,18 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.ligasfragment.R
 import com.example.ligasfragment.databinding.FragmentEquiposBinding
 import com.example.ligasfragment.model.Equipo
 import com.example.ligasfragment.ui.adapter.EquiposAdapter
@@ -50,6 +55,32 @@ class EquiposFragment : Fragment() {
         }
 
         return binding.root
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) // Activo menú
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.inicio -> {
+                findNavController().navigate(R.id.action_equiposFragment_to_loginFragment)
+                true
+            }
+            R.id.favorito -> {
+                findNavController().navigate(R.id.action_equiposFragment_to_favoritosFragment)
+                true
+            }
+            R.id.salir -> {
+                requireActivity().finishAffinity()//estp cierra
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun cargarEquiposDeLiga(ligaNombre: String) {

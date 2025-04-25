@@ -7,10 +7,10 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textMain"
+        android:id="@+id/textUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Iniciada sesión con éxito"
+
         android:textSize="18sp"
         android:layout_marginBottom="20dp"
         android:gravity="center"/>
@@ -18,15 +18,9 @@
         android:id="@+id/buttonSeguirNavegando"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seguir Navegando"
+        android:text="Ir al listado de ligas"
         android:layout_marginTop="20dp"/>
 
 
-    <Button
-        android:id="@+id/buttonVolver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Volver"
-        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

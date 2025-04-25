@@ -12,7 +12,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.ligasfragment.R
-import com.example.ligasfragment.databinding.FragmentMainBinding
+import com.example.ligasfragment.databinding.FragmentConfirmacionBinding
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
@@ -22,7 +23,7 @@ import com.google.firebase.database.ValueEventListener
 
 class ConfirmacionFragment : Fragment() {
 
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentConfirmacionBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var  database: FirebaseDatabase
     override fun onAttach(context: Context) {
@@ -38,12 +39,22 @@ class ConfirmacionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentConfirmacionBinding.inflate(inflater, container, false)
+        val userId=auth.currentUser!!.uid
+        if(userId!=null){
+            val refUser=database.reference.child("usuarios").child(userId)
+            refUser.get().addOnSuccessListener { snapshot ->
+                val nombre= snapshot.child("nombre").getValue(String ::class.java)
+                if(!nombre.isNullOrEmpty()){
+                    binding.textUsuario.text= "Sesión iniciada como $nombre"
+                }
+            }.addOnFailureListener{binding.textUsuario.text= "Sesion iniciada"}
+        }
 
         // Configuración del botón "Seguir Navegando"
         binding.buttonSeguirNavegando.setOnClickListener {
             // Navego a LigasFragment
-            findNavController().navigate(R.id.action_mainFragment_to_ligasFragment)
+            findNavController().navigate(R.id.action_confirmacionFragment_to_ligasFragment)
             //coger referencia y nombre
 
                 ///Añadir campo Ligas para que se muestre
@@ -68,10 +79,7 @@ class ConfirmacionFragment : Fragment() {
 
         }
 
-        // Configuración del botón "Volver"
-        binding.buttonVolver.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
-        }
+
 
         return binding.root
     }
@@ -88,11 +96,11 @@ class ConfirmacionFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.inicio -> {
-                findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
+                findNavController().navigate(R.id.action_confirmacionFragment_to_loginFragment)
                 true
             }
             R.id.favorito -> {
-                findNavController().navigate(R.id.action_mainFragment_to_favoritosFragment)
+                findNavController().navigate(R.id.action_confirmacionFragment_to_favoritosFragment)
                 true
             }
             R.id.salir -> {
