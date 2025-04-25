@@ -41,7 +41,7 @@ class EquiposAdapter(
 
         val ref = FirebaseDatabase.getInstance("https://ligasfragment-default-rtdb.europe-west1.firebasedatabase.app/").reference.child("usuarios").child(userId ?: "").child("listaFav")
 
-        // Estado inicial: comprobar si ya es favorito y pintar la estrella
+        // comprobar si ya es favorito y pintar la estrella
         ref.get().addOnSuccessListener { snapshot->
             for(child in snapshot.children){
                 val equipo =child.getValue(Equipo::class.java)

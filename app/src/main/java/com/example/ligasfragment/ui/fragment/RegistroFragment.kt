@@ -40,12 +40,17 @@ class RegistroFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        binding.btnVolverLogin.setOnClickListener {
+            findNavController().navigate(R.id.action_registroFragment_to_loginFragment)
+        }
 
         binding.btnRegistro.setOnClickListener {
             val correo = binding.editCorreo.text.toString()
             val pass = binding.editPass.text.toString()
             val nombre = binding.editNombre.text.toString()
             val telefono = binding.editTelefono.text.toString()
+
+
 
             if (correo.isBlank() || pass.length < 6 || nombre.isBlank() || telefono.isBlank()) {
                 Snackbar.make(binding.root, "Completa todos los campos correctamente", Snackbar.LENGTH_LONG).show()

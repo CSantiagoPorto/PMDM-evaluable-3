@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_registroFragment_to_confirmacionFragment"
             app:destination="@id/confirmacionFragment" />
+        <action
+            android:id="@+id/action_registroFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
 
     <!-- esto va de ligas a login -->

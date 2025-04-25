@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-        // Configuración del navController
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         // Le pongo las excepciones donde no quiero que muestre el toolbar

@@ -122,7 +122,7 @@ class LigasFragment : Fragment(), LigasAdapter.OnFavoritoClickListener {
             )
         )
     }*/
-    //Este método porque leí mal el enunciado y entendía que había que cargar todo
+    //Este método está aquí porque leí mal el enunciado y entendí que había que cargar todo
 
     override fun onLigaClick(liga: Liga) {
         val bundle = Bundle().apply {
