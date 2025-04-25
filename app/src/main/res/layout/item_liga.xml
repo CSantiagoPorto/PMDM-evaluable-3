@@ -1,17 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
-
-    <ImageView
-        android:id="@+id/Logo"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginEnd="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_foreground" />
-
+    android:padding="16dp"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/NombreLiga"
@@ -26,14 +19,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ver liga" />
-    <ImageView
-        android:id="@+id/imageViewFavorito"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/no"
-        android:layout_marginStart="16dp"
-
-    android:contentDescription="Favorito"/>
-
 
 </LinearLayout>
