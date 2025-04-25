@@ -2,11 +2,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/inicio"
+        android:icon="@drawable/home"
+        android:title="Inicio"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/favorito"
         android:icon="@drawable/fav"
         android:title="Favorito"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/salir"
+        android:icon="@drawable/volver"
+        android:title="Salir"
+        app:showAsAction="always" />
 
 
     <item

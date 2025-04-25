@@ -1,9 +1,6 @@
 package com.example.ligasfragment
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -20,19 +17,22 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Activar la Toolbar
-        setSupportActionBar(findViewById(R.id.toolbar))
 
-        // Ajuste para que NO muestre Toolbar en LoginFragment y RegistroFragment
+        setSupportActionBar(binding.toolbar)
+
+        // Configuración del navController
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        // Le pongo las excepciones donde no quiero que muestre el toolbar
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.loginFragment,
-                R.id.registroFragment
-            )
+            setOf(R.id.loginFragment, R.id.registroFragment)
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
-
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 }

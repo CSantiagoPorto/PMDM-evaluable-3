@@ -42,6 +42,12 @@
         <action
             android:id="@+id/action_mainFragment_to_ligasFragment"
             app:destination="@id/ligasFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_equiposFragment"
+            app:destination="@id/equiposFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_favoritosFragment"
+            app:destination="@id/favoritosFragment" />
     </fragment>
 
     <!-- esto va de ligas a equipos -->
@@ -77,6 +83,9 @@
         <action
             android:id="@+id/action_equiposFragment_to_favoritosFragment"
             app:destination="@id/favoritosFragment" />
+        <action
+            android:id="@+id/action_equiposFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritosFragment"

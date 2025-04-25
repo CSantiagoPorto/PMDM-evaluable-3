@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -39,7 +42,7 @@ class ConfirmacionFragment : Fragment() {
 
         // Configuración del botón "Seguir Navegando"
         binding.buttonSeguirNavegando.setOnClickListener {
-            // Navegar a LigasFragment
+            // Navego a LigasFragment
             findNavController().navigate(R.id.action_mainFragment_to_ligasFragment)
             //coger referencia y nombre
 
@@ -72,5 +75,33 @@ class ConfirmacionFragment : Fragment() {
 
         return binding.root
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) // Activo menú
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.inicio -> {
+                findNavController().navigate(R.id.action_mainFragment_to_loginFragment)
+                true
+            }
+            R.id.favorito -> {
+                findNavController().navigate(R.id.action_mainFragment_to_favoritosFragment)
+                true
+            }
+            R.id.salir -> {
+                requireActivity().finishAffinity()//estp cierra
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 }
 
